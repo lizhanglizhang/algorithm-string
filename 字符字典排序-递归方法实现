@@ -58,5 +58,5 @@ int string_find(int beg,int end,int loc){
 			return i;
 		}
 	}
-	return -1;
+	return -1;//如果没有字符串结尾就返回-1
 }
