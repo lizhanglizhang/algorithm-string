@@ -1,0 +1,62 @@
+先按字符串第一位进行排位，再将第一位相同字符的字符串看做一组，把这些字符串按第二位排位， 然后再分组
+
+所以可以看出这个问题可以继续划分下去，而细分的问题是原问题的子问题，所以可以用递归的方法来解题。
+
+
+    
+//解决问题的函数
+ void alloperator(int beg, int end, int loc){
+	if (end <= beg) return;
+       //先排序
+	void string_sort(int, int, int);
+	string_sort(beg, end, loc);
+	int  string_find(int, int, int);
+       //排序后可能产生一个问题，在当前位，字符串已经是空了，排在最前面，访问将会得到不可知的结果
+        //所以处理输入阶段，给每个字符串添加一个‘0’字符作为结尾。只要当前位的字符是‘0’，不再参与
+        //下一层的比较
+
+         //寻找最开始非空的字符串
+	int  index = string_find(beg, end, loc);
+	if (index == -1) return;
+   
+        //按字母不同进行分类，每类再进行下一层的排序   
+	char  cur = (*(tar[index]))[loc];
+	for (int i = index; i <= end; i++){
+		if ((*(tar[i]))[loc] != cur){
+			alloperator(index, i - 1, loc + 1);		
+				cur = (*(tar[i]))[loc];
+				index = i;		
+		}
+	}
+        //特别注意！按照上面的处理，最后一类不会被处理，所以还需要处理最后一类
+	alloperator(index,end,loc+1);
+}
+
+
+//这是一个快速排序的方法，
+void string_sort(int low, int high, int loc){
+	if (low>high)return;
+	int i = low, j = high;
+	char base = (*(tar[low]))[loc];
+
+	while (i<j){
+		while ((*(tar[j]))[loc] >= base&&i < j) j--;
+		while ((*(tar[i]))[loc] <= base&&i < j)i++;
+		if (i == j) break;
+		swap(tar[i],tar[j]);
+	}
+	swap(tar[i],tar[low]);
+	string_sort(low,i-1,loc);
+	string_sort(i+1,high,loc);
+}
+
+
+int string_find(int beg,int end,int loc){
+  
+	for (int i = beg; i <= end;i++){
+		if ((*(tar[i]))[loc]!='0'){
+			return i;
+		}
+	}
+	return -1;
+}
